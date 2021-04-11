@@ -14,6 +14,14 @@ from numpy import newaxis
 import csv
 import argparse
 
+
+# Arguments
+epochs = 100
+batch_size = 32
+past_day = 5
+future_day = 1
+
+
 # 以收盤價為train, 以開盤價為target label
 def split_dataset(df, past_day, future_day):
   X, Y = [], []
@@ -32,22 +40,65 @@ def build_model(shape):
   model.add(Dense(1))
   return model 
 
+def plotting(input1, input2, title, legend, x_label=None, y_label=None, grid=True, figsize=(20, 8)):
+    plt.figure(figsize=figsize)
+    plt.plot(input1)
+    plt.plot(input2)
+    plt.title(title)
+    plt.legend(legend)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.grid(grid)
+    plt.show()
 
-# Arguments
-epochs = 100
-batch_size = 32
-past_day = 5
-future_day = 1
+def calculate_revenue(size, nu):
+    #  1: buy
+    #  0: hold
+    # -1: short/sell
+    
+    # size = x_test.shape[0] - 1
+    status = 0
+    flag = 0
+    revenue = 0
+    with open('output.csv', mode='w') as csv_file:
+        writer = csv.writer(csv_file)
+        for i in range(size):
+            if (status == 1):
+                if (nu[i+1]<nu[i]):
+                    writer.writerow(['-1'])
+                    status = 0
+                    revenue = revenue+nu[i]
+                else:
+                    writer.writerow(['0'])
+            elif (status == 0):
+                if (nu[i+1]>nu[i]):
+                    writer.writerow(['1'])
+                    status = 1
+                    revenue = revenue-nu[i]
+                elif (nu[i+1]<nu[i]):
+                    writer.writerow(['-1'])
+                    status = -1
+                    revenue = revenue+nu[i]
+                else: 
+                    writer.writerow(['0'])
+            else :
+                if (nu[i+1]>nu[i]):
+                    writer.writerow(['1'])
+                    status = 0
+                    revenue = revenue-nu[i]
+                else:
+                    writer.writerow(['0'])
+    if (status==1) :
+        revenue = revenue + nu[size]
+    elif (status==-1) :
+        revenue = revenue - nu[size] 
 
+    return revenue
 
 if __name__ == "__main__":    
     
     # Main Arguments
-    main_path = ''
-    status = 0;
-    flag = 0;
-    revenue = 0;
-
+    main_path = '';
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--training", default="dataset/training.csv", help="input training data file name")
@@ -74,13 +125,8 @@ if __name__ == "__main__":
     x_train, y_train = split_dataset(scaled_train_df, past_day, future_day)
     x_test, y_test = split_dataset(scaled_test_df, past_day, future_day)
 
-    # Plotting Original Open and Close Price of testing.csv
-    plt.figure(figsize=(20,8))
-    plt.plot(x_test[:,-1], color='blue')
-    plt.plot(y_test, color='red')
-    plt.title("Price")
-    plt.grid(True)
-    plt.legend(['close price','open price'])
+    # Plotting Original Open and Close Price of testing.csv    
+    plotting(x_test[:,-1], y_test, 'Price', ['close price','open price'])
 
     # Reshape the data into (Samples, Timestep, Features)
     x_train = x_train.reshape(x_train.shape[0], x_train.shape[1], 1)
@@ -98,14 +144,7 @@ if __name__ == "__main__":
     model.save('model.h5')
 
     # Plotting Model Loss
-    plt.figure(figsize=(20,8))
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.title("Model Loss")
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.legend(['Train','Valid'])
-    plt.grid(True)
+    plotting(input1=history.history['loss'], input2=history.history['val_loss'], title='Model Loss', legend=['Train','Valid'], x_label='Epochs', y_label='Loss')    
 
     # Start Predicting
     predicted = model.predict(x_test)
@@ -148,51 +187,10 @@ if __name__ == "__main__":
 
     ground_truth = sc.inverse_transform(y_test.reshape(-1,1))
 
-    plt.figure(figsize=(20,8))
-    plt.plot(ground_truth)
-    plt.plot(nu)
-    plt.title('Open Price')
-    plt.legend(['y_test','predict'])
-    plt.grid(True)
-
-
-    #  1: buy
-    #  0: hold
-    # -1: short/sell    
-    with open('output.csv', mode='w') as csv_file:
-        writer = csv.writer(csv_file)    
-        for i in range(19):
-            if (status == 1):
-                if (nu[i+1]<nu[i]):
-                    writer.writerow(['-1'])
-                    status = 0
-                    revenue = revenue+nu[i]
-                else:
-                    writer.writerow(['0'])
-            elif (status == 0):
-                if (nu[i+1]>nu[i]):
-                    writer.writerow(['1'])
-                    status = 1
-                    revenue = revenue-nu[i]
-                elif (nu[i+1]<nu[i]):
-                    writer.writerow(['-1'])
-                    status = -1
-                    revenue = revenue+nu[i]
-                else: 
-                    writer.writerow(['0'])
-            else :
-                if (nu[i+1]>nu[i]):
-                    writer.writerow(['1'])
-                    status = 0
-                    revenue = revenue-nu[i]
-                else:
-                    writer.writerow(['0'])
-    if (status==1) :
-        revenue = revenue + nu[19]
-    elif (status==-1) :
-        revenue = revenue - nu[19] 
-
-
+    plotting(input1=ground_truth, input2=nu, title='Open Price', legend=['y_test','predict'])
+    
+    revenue = calculate_revenue(x_test.shape[0]-1, nu)
+    print('===========================')
     print('Revenue is :', revenue)
-    print('Done')
+    print('===========================')
     
