@@ -106,9 +106,8 @@ if __name__ == "__main__":
     parser.add_argument("--output", default="output.csv", help="output file name")
     args = parser.parse_args()
 
-
-    train_df = pd.read_csv(os.path.join(main_path, args.training), header=None)
-    test_df = pd.read_csv(os.path.join(main_path, args.testing), header=None)
+    train_df = pd.read_csv(args.training, header=None)
+    test_df = pd.read_csv(args.testing, header=None)
 
     train_df.drop([1,2,3], inplace=True, axis=1)
     test_df.drop([1,2,3], inplace=True, axis=1)
@@ -188,7 +187,7 @@ if __name__ == "__main__":
     ground_truth = sc.inverse_transform(y_test.reshape(-1,1))
 
     plotting(input1=ground_truth, input2=nu, title='Open Price', legend=['y_test','predict'])
-    
+
     revenue = calculate_revenue(x_test.shape[0]-1, nu)
     print('===========================')
     print('Revenue is :', revenue)
