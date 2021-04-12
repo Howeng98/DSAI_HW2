@@ -69,6 +69,11 @@ Input的data為來自NASDAQ:IBM。在這份資料中有共有**1476**個 ``entri
   若曲線向上，則買，反之則不做動作
   
 觀察兩天後而不是一天後的目的在於當股票在持續漲跌時，可以利用買空與賣空動作獲得更大的利潤，由於一天只能買賣一張股票，故提早兩天預測。
+
+預測獲利經由test_calculator計算後可得約為
+
+![image](https://user-images.githubusercontent.com/41318666/114424521-c97d0b80-9bea-11eb-8e26-fccbde3c11ad.png)
+
  
 
 ## Keywords
