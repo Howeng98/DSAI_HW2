@@ -58,7 +58,7 @@ Input的data為來自NASDAQ:IBM。在這份資料中有共有**1476**個 ``entri
 
 ![image](https://user-images.githubusercontent.com/41318666/114422284-b5380f00-9be8-11eb-9476-c6e4a226c5ef.png)
 
-## Note
+## Action Decision
 
 由於題目規定允許買空與賣空之動作，基於準確的預測結果，在決定買賣動作時，我們會觀察兩天後與三天後的曲線變化的預測，並分為以下情形：
 當目前持有股票時：
@@ -70,7 +70,7 @@ Input的data為來自NASDAQ:IBM。在這份資料中有共有**1476**個 ``entri
   
 觀察兩天後而不是一天後的目的在於當股票在持續漲跌時，可以利用買空與賣空動作獲得更大的利潤，由於一天只能買賣一張股票，故提早兩天預測。
 
-預測獲利經由test_calculator計算後可得約為
+預測獲利經由test_calculator計算後可得約為8.87
 
 ![image](https://user-images.githubusercontent.com/41318666/114424521-c97d0b80-9bea-11eb-8e26-fccbde3c11ad.png)
 
