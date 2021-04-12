@@ -29,7 +29,7 @@ python3 trader.py dataset/training.csv dataset/testing.csv output.csv
 建議直接執行ipynb檔案來直接看我們在各個區塊的輸出結果。
 
 ## Input data
-Input的data為來自NASDAQ:IBM。在這份資料中有共有**1476**個 ``entries`` 和 **4** 個 ``features``。而本模型只使用的features為 ``close``，而``testing``則為**20**個``entries``。
+Input的data為來自NASDAQ:IBM。在這份資料中有共有**1476**個 ``entries`` 和 **4** 個 ``features``。而本模型只使用的features為 ``close``，而**testing data**則為**20**個``entries``。
   
 ![image](https://user-images.githubusercontent.com/41318666/114421341-cc2a3180-9be7-11eb-8751-4a2b555898fc.png)
 ![image](https://user-images.githubusercontent.com/41318666/114421405-d9dfb700-9be7-11eb-85f3-29caae92e537.png)
@@ -44,7 +44,7 @@ Input的data為來自NASDAQ:IBM。在這份資料中有共有**1476**個 ``entri
 
 
 ## Training
-``epochs``設定為**50**，最後``loss``約位於**0.04**左右：
+``epochs``設定為**100**，最後``loss``約位於**0.0014**左右：
 
 ![image](https://user-images.githubusercontent.com/41318666/114421875-56729580-9be8-11eb-8e69-d1651f86534a.png)
 
