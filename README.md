@@ -7,7 +7,6 @@
   - **Ubuntu 20.04.2 LTS**
 
 # Requirement
-requirements.txt目前還是手刻，若有python版本和lib版本相衝或不相容，還請自行解決。
 
   - **pandas == 1.2.3**
   - **keras == 2.4.3**
@@ -23,11 +22,11 @@ Install requirement.txt
 pip3 install -r requirements.txt
 ```
 
-執行 app.py。 Input 和 Output path 已經定義在app.py里了.
+執行 trader.py。 Input 和 Output path 已經有一份default定義在trader.py里了.
 ```
-python3 app.py
+python3 trader.py dataset/training.csv dataset/testing.csv output.csv
 ```
-強烈建議直接執行ipynb檔案來直接看我們在各個區塊的輸出結果。
+建議直接執行ipynb檔案來直接看我們在各個區塊的輸出結果。
 
 ## Input data
 Input的data為來自NASDAQ:IBM。在這份資料中有共有**1476**個 ``entries`` 和 **4** 個 ``features``。而本模型只使用的features為 ``close``，而``testing``則為**20**個``entries``。
